@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import morganBody from 'morgan-body';
 import express from 'express';
 import bodyParser from 'body-parser';
 import http from 'http';
@@ -20,6 +21,6 @@ APP.use(
     })
 )
 
+morganBody(APP);
 appRouter(APP);
-
 export default SERVER;

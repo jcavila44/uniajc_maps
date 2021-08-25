@@ -61,4 +61,34 @@ const createUser = (req: Request, res: Response) => {
       console.error(err.stack);
     });
 };
-export default { selectAllUsers, createUser };
+
+const editUser = (req: Request, res:Response) => {
+    const { usu_id, usu_correo, usu_nombre, usu_psw } = req.body;
+
+    createConnection(CONNECTION)
+    .then(async connection =>{
+        let userRepository = connection.getRepository(Usuario);
+        let user = await userRepository.findOneOrFail(usu_id);
+
+        if(usu_nombre) user.usu_nombre = usu_nombre;
+        if(usu_correo) user.usu_correo = usu_correo;
+        if(usu_psw) user.usu_psw = usu_psw;
+
+        userRepository.save(user)
+        .then((userUpdated)=>{
+            res.status(200).json({
+                message: 'Usuario actuaizado correctamente.'
+            })
+        })
+        .catch((err:Error)=>{
+            console.error(err.stack)
+        })
+        .finally(() =>{
+            connection.close()
+        });
+    })
+    .catch((err:Error)=>{
+        console.error(err.stack)
+    });
+};
+export default { selectAllUsers, createUser, editUser };
